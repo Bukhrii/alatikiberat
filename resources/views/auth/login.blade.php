@@ -25,7 +25,7 @@
             </div>
             <div>
                 <label class="block text-sm font-bold mb-1">Password</label>
-                <input type="password" name="password" class="w-full p-3 border border-[#dbe0e6] rounded-lg focus:ring-2 focus:ring-[#136dec] outline-none" required>
+                <input type="password" name="password" class="w-full p-3 border border-[#dbe0e6] rounded-lg focus:ring-2 focus:ring-[#136dec] outline-none" placeholder="Masukkan password Anda" required>
             </div>
             <button type="submit" class="w-full bg-[#136dec] text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
                 Login

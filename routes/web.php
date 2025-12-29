@@ -56,6 +56,8 @@ Route::middleware(['auth', 'role:procurement_manager'])->prefix('manager')->grou
     // UC-06: Mengelola Data Supplier
     Route::get('/supplier-management', [SupplierController::class, 'index'])->name('manager.suppliers');
     Route::post('/suppliers/store', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::put('/suppliers/update/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
+    Route::delete('/suppliers/delete/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
     // UC-08: Mengelola Laporan Persediaan
     Route::get('/reports', [InventoryReportController::class, 'index'])->name('manager.reports');
     Route::get('/reports/export', [InventoryReportController::class, 'exportExcel'])->name('manager.reports.export');
