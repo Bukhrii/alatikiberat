@@ -13,7 +13,8 @@ class StockTransaction extends Model
         'type', 
         'quantity', 
         'reference', 
-        'status'
+        'status',
+        'notes'
     ];
 
     public function sparePart()

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryReport extends Model
 {
     protected $fillable = [
-        'manager_id',
+        'manager_id', 
         'report_name', 
         'report_type', 
         'start_period', 
@@ -23,8 +23,8 @@ class InventoryReport extends Model
         'end_period' => 'date',
     ];
 
-    public function user()
+    public function manager()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'manager_id'); // Kunci asing khusus
     }
 }
