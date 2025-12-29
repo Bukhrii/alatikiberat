@@ -3,39 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Models\SparePart;
-use App\Models\StockTransaction;
+use App\Exports\InventoryReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class InventoryReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Menghasilkan ringkasan laporan per kategori (seperti di view)
-        $categoryValuation = SparePart::join('inventories', 'spare_parts.id', '=', 'inventories.spare_part_id')
+        // Menentukan nilai default jika input kosong: Defaultnya adalah Hari Ini
+        $startDate = $request->input('start_date', date('Y-m-d'));
+        $endDate = $request->input('end_date', date('Y-m-d'));
+        
+        // Ambil daftar kategori untuk dropdown dinamis
+        $categories = SparePart::distinct()->pluck('category');
+
+        $query = SparePart::join('inventories', 'spare_parts.id', '=', 'inventories.spare_part_id')
+            ->select(
+                'category',
+                DB::raw('count(spare_parts.id) as item_count'),
+                DB::raw('sum(inventories.stock) as total_stock'),
+                DB::raw('sum(inventories.stock * spare_parts.unit_price) as total_value')
+            );
+
+        // Filter Kategori
+        if ($request->filled('category') && $request->category != 'Semua Kategori') {
+            $query->where('category', $request->category);
+        }
+
+        // Filter Tanggal: Membatasi data berdasarkan kapan stok tersebut terakhir diupdate/masuk
+        // Gunakan whereBetween pada kolom updated_at atau created_at
+        $query->whereBetween('inventories.updated_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+
+        $categoryValuation = $query->groupBy('category')->get();
+
+        return view('manajer-pembelian-inventoryreports', compact(
+            'categoryValuation', 
+            'categories', 
+            'startDate', 
+            'endDate'
+        ));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date', date('Y-m-d'));
+        $endDate = $request->input('end_date', date('Y-m-d'));
+        
+        $query = SparePart::join('inventories', 'spare_parts.id', '=', 'inventories.spare_part_id')
             ->select(
                 'category',
                 DB::raw('count(spare_parts.id) as item_count'),
                 DB::raw('sum(inventories.stock) as total_stock'),
                 DB::raw('sum(inventories.stock * spare_parts.unit_price) as total_value')
             )
-            ->groupBy('category')
-            ->get();
+            ->whereBetween('inventories.updated_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
 
-        return view('manajer-pembelian-inventoryreports', compact('categoryValuation'));
-    }
+        if ($request->filled('category') && $request->category != 'Semua Kategori') {
+            $query->where('category', $request->category);
+        }
 
-    public function fastMoving()
-    {
-        // UC-08: Menganalisis item Fast-Moving berdasarkan transaksi keluar terbanyak
-        $fastMovingItems = StockTransaction::where('type', 'keluar')
-            ->select('spare_part_id', DB::raw('sum(quantity) as total_sold'))
-            ->groupBy('spare_part_id')
-            ->orderBy('total_sold', 'desc')
-            ->with('sparePart')
-            ->take(10)
-            ->get();
+        $data = $query->groupBy('category')->get();
 
-        return view('manajer-pembelian-inventoryreports-fast', compact('fastMovingItems'));
+        // Unduh file dengan nama yang dinamis berdasarkan tanggal
+        return Excel::download(
+            new InventoryReportExport($data), 
+            'Laporan_Inventaris_' . $startDate . '_ke_' . $endDate . '.xlsx'
+        );
     }
 }

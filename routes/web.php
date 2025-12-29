@@ -54,10 +54,11 @@ Route::middleware(['auth', 'role:procurement_manager'])->prefix('manager')->grou
     // UC-05 & UC-07: Dashboard Monitoring & Notifikasi Stok Menipis
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('manager.dashboard');
     // UC-06: Mengelola Data Supplier
-    Route::get('/suppliers', [SupplierController::class, 'index'])->name('manager.suppliers');
+    Route::get('/supplier-management', [SupplierController::class, 'index'])->name('manager.suppliers');
     Route::post('/suppliers/store', [SupplierController::class, 'store'])->name('suppliers.store');
     // UC-08: Mengelola Laporan Persediaan
     Route::get('/reports', [InventoryReportController::class, 'index'])->name('manager.reports');
+    Route::get('/reports/export', [InventoryReportController::class, 'exportExcel'])->name('manager.reports.export');
 });
 
 
