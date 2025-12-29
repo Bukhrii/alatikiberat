@@ -12,7 +12,7 @@
                 <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md" style="font-size: 20px;">input</span>
             </div>
             <div class="flex flex-col gap-1 mt-2">
-                <p class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-tight">1,250</p>
+                <p class="text-[#111418] dark:text-white text-3xl font-black">{{ number_format($transactions->sum('quantity')) }}</p>
                 <div class="flex items-center gap-1">
                     <span class="material-symbols-outlined text-[#07883b] text-sm font-bold">trending_up</span>
                     <p class="text-[#07883b] text-sm font-bold leading-normal">+15% minggu ini</p>
@@ -48,12 +48,16 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#dbe0e6] dark:divide-gray-700">
+                    @foreach($transactions as $trx)
                     <tr>
-                        <td class="p-4 font-bold text-sm">Brake Pad X200</td>
-                        <td class="p-4 text-sm">50 Box</td>
-                        <td class="p-4 text-sm">AutoParts Indo</td>
-                        <td class="p-4 text-right"><span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Selesai</span></td>
+                        <td class="p-4 font-bold text-sm">{{ $trx->sparePart->name }}</td>
+                        <td class="p-4 text-sm">{{ $trx->quantity }} Unit</td>
+                        <td class="p-4 text-sm">{{ $trx->supplier->name }}</td>
+                        <td class="p-4 text-right">
+                            <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">{{ $trx->status }}</span>
+                        </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

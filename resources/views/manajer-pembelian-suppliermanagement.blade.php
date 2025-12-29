@@ -35,28 +35,19 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                @foreach($suppliers as $s)
                 <tr>
                     <td class="p-4">
-                        <div class="font-bold text-sm">PT. AutoParts Indonesia</div>
-                        <div class="text-xs text-gray-500">Jakarta Utara</div>
+                        <div class="font-bold text-sm">{{ $s->name }}</div>
+                        <div class="text-xs text-gray-500">{{ $s->address }}</div>
                     </td>
-                    <td class="p-4 text-sm">021-555-0199</td>
-                    <td class="p-4 text-sm text-green-600 font-bold">A (Excellent)</td>
+                    <td class="p-4 text-sm">{{ $s->phone_number }}</td>
+                    <td class="p-4 text-sm font-bold">{{ $s->rating }}</td>
                     <td class="p-4 text-right">
                         <button class="text-primary text-sm font-bold">Detail</button>
                     </td>
                 </tr>
-                 <tr>
-                    <td class="p-4">
-                        <div class="font-bold text-sm">Mitra Teknik Sejahtera</div>
-                        <div class="text-xs text-gray-500">Surabaya</div>
-                    </td>
-                    <td class="p-4 text-sm">031-999-2211</td>
-                    <td class="p-4 text-sm text-blue-600 font-bold">B (Good)</td>
-                    <td class="p-4 text-right">
-                        <button class="text-primary text-sm font-bold">Detail</button>
-                    </td>
-                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

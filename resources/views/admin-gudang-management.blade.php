@@ -26,20 +26,22 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#dbe0e6] dark:divide-gray-700">
+                    @foreach($parts as $item)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td class="p-4">
-                            <div class="font-bold text-sm">Filter Oli</div>
-                            <div class="text-xs text-gray-500">SKU: FLT-001</div>
+                            <div class="font-bold text-sm">{{ $item->name }}</div>
+                            <div class="text-xs text-gray-500">SKU: {{ $item->part_number }}</div>
+                         </td>
+                        <td class="p-4 text-sm">{{ $item->category }}</td>
+                        <td class="p-4 text-sm font-bold {{ $item->inventory->stock <= $item->inventory->min_stock ? 'text-red-600' : 'text-green-600' }}">
+                            {{ $item->inventory->stock }} Pcs
                         </td>
-                        <td class="p-4 text-sm">Engine Parts</td>
-                        <td class="p-4 text-sm font-bold text-green-600">120 Pcs</td>
-                        <td class="p-4 text-sm">Rp 45.000</td>
+                        <td class="p-4 text-sm">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
                         <td class="p-4 text-right">
-                            <button class="text-gray-500 hover:text-primary"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="text-gray-500 hover:text-red-500 ml-2"><span class="material-symbols-outlined">delete</span></button>
-                        </td>
+                            </td>
                     </tr>
-                    </tbody>
+                     @endforeach
+                </tbody>
             </table>
         </div>
         <div class="p-4 border-t border-gray-200 dark:border-gray-700 text-center">

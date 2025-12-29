@@ -47,24 +47,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($categoryValuation as $report)
                     <tr>
-                        <td class="p-3 border text-sm">Engine Parts</td>
-                        <td class="p-3 border text-sm text-right">150</td>
-                        <td class="p-3 border text-sm text-right">5,200</td>
-                        <td class="p-3 border text-sm text-right">450.000.000</td>
+                        <td class="p-3 border text-sm">{{ $report->category }}</td>
+                        <td class="p-3 border text-sm text-right">{{ $report->item_count }}</td>
+                        <td class="p-3 border text-sm text-right">{{ number_format($report->total_stock) }}</td>
+                        <td class="p-3 border text-sm text-right">Rp {{ number_format($report->total_value, 0, ',', '.') }}</td>
                     </tr>
-                    <tr>
-                        <td class="p-3 border text-sm">Electrical</td>
-                        <td class="p-3 border text-sm text-right">80</td>
-                        <td class="p-3 border text-sm text-right">1,100</td>
-                        <td class="p-3 border text-sm text-right">120.000.000</td>
-                    </tr>
-                    <tr class="bg-gray-50 font-bold">
-                        <td class="p-3 border text-sm">TOTAL</td>
-                        <td class="p-3 border text-sm text-right">230</td>
-                        <td class="p-3 border text-sm text-right">6,300</td>
-                        <td class="p-3 border text-sm text-right">570.000.000</td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

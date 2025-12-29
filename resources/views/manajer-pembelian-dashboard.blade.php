@@ -111,34 +111,37 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#dbe0e6] dark:divide-gray-700">
+                    @foreach($lowStockItems as $low)
                     <tr class="group hover:bg-[#f8f9fa] dark:hover:bg-gray-800 transition-colors">
                         <td class="p-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-lg bg-gray-100 bg-cover bg-center border border-gray-200" style="background-image: url('https://placehold.co/100');"></div>
                                 <div class="flex flex-col">
-                                    <span class="text-[#111418] dark:text-white font-bold text-sm">Brake Pad Ceramic X200</span>
-                                    <span class="text-[#617289] text-xs font-mono">SKU: BP-CER-200-F</span>
+                                    <span class="text-[#111418] dark:text-white font-bold text-sm">{{ $low->sparePart->name }}</span>
+                                    <span class="text-[#617289] text-xs font-mono">SKU: {{ $low->sparePart->part_number }}</span>
                                 </div>
                             </div>
                         </td>
                         <td class="p-4">
                             <div class="flex flex-col gap-1.5 max-w-[140px]">
                                 <div class="flex justify-between text-xs">
-                                    <span class="font-bold text-red-600">5 Pcs</span>
-                                    <span class="text-[#617289]">Min: 20</span>
+                                    <span class="font-bold text-red-600">{{ $low->stock }} Pcs</span>
+                                    <span class="text-[#617289]">Min: {{ $low->min_stock }}</span>
                                 </div>
                                 <div class="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-red-500 w-[25%] rounded-full"></div>
+                                    <div class="h-full bg-red-500 rounded-full" style="width: {{ ($low->stock / $low->min_stock) * 100 }}%"></div>
                                 </div>
                             </div>
                         </td>
                         <td class="p-4">
-                            <span class="text-[#111418] dark:text-white text-sm font-medium">AutoParts Indo</span>
+                            <span class="text-[#111418] dark:text-white text-sm font-medium">
+                                {{ $low->sparePart->supplier->name ?? 'N/A' }}
+                            </span>
                         </td>
                         <td class="p-4 text-right">
-                             <button class="text-primary hover:text-blue-700 font-bold text-sm bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors">Reorder</button>
+                            <button class="text-primary hover:text-blue-700 font-bold text-sm bg-primary/10 px-3 py-1.5 rounded-lg">Reorder</button>
                         </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

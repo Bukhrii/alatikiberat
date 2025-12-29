@@ -35,18 +35,16 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                @foreach($inventories as $inv)
                 <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800">
-                    <td class="py-3 text-sm font-bold">Zona A</td>
-                    <td class="py-3 text-sm">A-12</td>
-                    <td class="py-3 text-sm">Filter Oli X1</td>
-                    <td class="py-3 text-right"><button class="text-primary font-bold text-sm">Pindahkan</button></td>
+                    <td class="py-3 text-sm font-bold">Zona Default</td>
+                    <td class="py-3 text-sm">{{ $inv->location_rack }}</td>
+                    <td class="py-3 text-sm">{{ $inv->sparePart->name }}</td>
+                    <td class="py-3 text-right">
+                        <button class="text-primary font-bold text-sm">Pindahkan</button>
+                    </td>
                 </tr>
-                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800">
-                    <td class="py-3 text-sm font-bold">Zona B</td>
-                    <td class="py-3 text-sm">B-05</td>
-                    <td class="py-3 text-sm">Busi Iridium</td>
-                    <td class="py-3 text-right"><button class="text-primary font-bold text-sm">Pindahkan</button></td>
-                </tr>
+                 @endforeach
             </tbody>
         </table>
     </div>
