@@ -7,6 +7,7 @@ use App\Exports\InventoryReportExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InventoryReportController extends Controller
 {
@@ -71,5 +72,32 @@ class InventoryReportController extends Controller
             new InventoryReportExport($data), 
             'Laporan_Inventaris_' . $startDate . '_ke_' . $endDate . '.xlsx'
         );
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $startDate = $request->input('start_date', date('Y-m-d'));
+        $endDate = $request->input('end_date', date('Y-m-d'));
+        
+        $query = SparePart::join('inventories', 'spare_parts.id', '=', 'inventories.spare_part_id')
+            ->select(
+                'category',
+                DB::raw('count(spare_parts.id) as item_count'),
+                DB::raw('sum(inventories.stock) as total_stock'),
+                DB::raw('sum(inventories.stock * spare_parts.unit_price) as total_value')
+            )
+            ->whereBetween('inventories.updated_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+
+        if ($request->filled('category') && $request->category != 'Semua Kategori') {
+            $query->where('category', $request->category);
+        }
+
+        $categoryValuation = $query->groupBy('category')->get();
+
+        // Load view khusus untuk PDF
+        $pdf = Pdf::loadView('inventory-pdf', compact('categoryValuation', 'startDate', 'endDate'))
+                  ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Inventaris_' . $startDate . '.pdf');
     }
 }

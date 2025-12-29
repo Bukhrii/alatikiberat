@@ -64,6 +64,7 @@ Route::middleware(['auth', 'role:procurement_manager'])->prefix('manager')->grou
     // UC-08: Mengelola Laporan Persediaan
     Route::get('/reports', [InventoryReportController::class, 'index'])->name('manager.reports');
     Route::get('/reports/export', [InventoryReportController::class, 'exportExcel'])->name('manager.reports.export');
+    Route::get('/reports/export-pdf', [InventoryReportController::class, 'exportPdf'])->name('manager.reports.export-pdf');
 });
 
 

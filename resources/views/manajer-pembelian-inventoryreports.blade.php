@@ -35,11 +35,21 @@
         <button type="submit" class="bg-primary text-white px-5 py-2 rounded-lg text-sm font-bold h-10 hover:bg-blue-700 transition-colors">
             Tampilkan Laporan
         </button>
-        <a href="{{ route('manager.reports.export', request()->query()) }}" 
-        class="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-bold h-10 hover:bg-green-700 flex items-center gap-2 transition-colors">
-            <span class="material-symbols-outlined" style="font-size:18px">download</span> 
-            Export Excel
-        </a>
+        <div class="flex gap-2">
+            {{-- Tombol Excel --}}
+            <a href="{{ route('manager.reports.export', request()->query()) }}" 
+                class="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-bold h-10 hover:bg-green-700 flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:18px">table_chart</span> 
+                    Export Excel
+            </a>
+
+            {{-- Tombol PDF --}}
+            <a href="{{ route('manager.reports.export-pdf', request()->query()) }}" 
+                class="bg-red-600 text-white px-5 py-2 rounded-lg text-sm font-bold h-10 hover:bg-red-700 flex items-center gap-2 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:18px">picture_as_pdf</span> 
+                    Export PDF
+            </a>
+        </div>
     </form>
 
     {{-- Kartu Laporan --}}
