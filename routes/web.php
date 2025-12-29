@@ -36,6 +36,7 @@ Route::middleware(['auth', 'role:warehouse_admin'])->prefix('admin')->group(func
     // UC-04: Melihat & Update Lokasi Rak
     Route::get('/locations', [SparePartController::class, 'rackLocations'])->name('admin.locations');
     Route::get('/admin/lokasi-stok', [InventoryController::class, 'locationIndex'])->name('admin.location');
+    Route::put('/locations/move/{id}', [SparePartController::class, 'moveItem'])->name('admin.locations.move');
     // UC-02: Mencatat Stok Masuk (Inbound)
     Route::get('/inbound', [StockTransactionController::class, 'inboundIndex'])->name('admin.inbound');
     Route::post('/inbound/store', [StockTransactionController::class, 'storeInbound'])->name('admin.inbound.store');

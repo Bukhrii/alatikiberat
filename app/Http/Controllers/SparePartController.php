@@ -84,9 +84,52 @@ class SparePartController extends Controller
     }
 
     // UC-04: Menampilkan Daftar Lokasi Rak
-    public function rackLocations()
+    // 1. Menampilkan Daftar Lokasi & Kalkulasi Kapasitas
+    public function rackLocations(Request $request)
     {
-        $inventories = Inventory::with('sparePart')->get();
-        return view('admin-gudang-stocklocation', compact('inventories'));
+        $search = $request->input('search');
+
+        // Mengambil data inventory
+        $inventories = Inventory::with('sparePart')
+            ->when($search, function ($query, $search) {
+                return $query->whereHas('sparePart', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('part_number', 'like', "%{$search}%");
+                });
+            })->get();
+
+        // Tentukan kapasitas maksimal rak (Misal: 100 item per rak)
+        $maxCapacity = 100; 
+    
+        // Hitung jumlah item riil di tiap rak
+        $counts = [
+            'A' => Inventory::where('location_rack', 'LIKE', 'A%')->count(),
+            'B' => Inventory::where('location_rack', 'LIKE', 'B%')->count(),
+            'C' => Inventory::where('location_rack', 'LIKE', 'C%')->count(),
+        ];
+
+        // Hitung persentase untuk progress bar
+        $capacity = [
+            'A' => ($counts['A'] / $maxCapacity) * 100,
+            'B' => ($counts['B'] / $maxCapacity) * 100,
+            'C' => ($counts['C'] / $maxCapacity) * 100,
+        ];
+
+        return view('admin-gudang-stocklocation', compact('inventories', 'capacity', 'counts', 'maxCapacity'));
+    }
+
+    // 3. Fungsi Pindahkan (Update Lokasi Rak)
+    public function moveItem(Request $request, $id)
+    {
+        $request->validate([
+            'new_rack' => 'required|string|max:10'
+        ]);
+
+        $inventory = Inventory::findOrFail($id);
+        $inventory->update([
+            'location_rack' => $request->new_rack
+        ]);
+
+        return redirect()->back()->with('success', 'Posisi barang berhasil dipindahkan ke Rak ' . $request->new_rack);
     }
 }
