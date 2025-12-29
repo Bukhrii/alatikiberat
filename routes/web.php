@@ -16,16 +16,17 @@ Route::get('/', [AuthController::class, 'showLogin'])->middleware('guest');
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    // Web perusahaan gk perlu perlu register
+    // Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    // Route::post('/register', [AuthController::class, 'register']);
 });
 
 /**
  * Grup Akses: Admin Gudang (Warehouse Admin)
  * Menangani UC-01, UC-02, UC-03, dan UC-04
  */
-// Route::middleware(['auth', 'role:warehouse_admin'])->prefix('admin')->group(function () {
-Route::prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:warehouse_admin'])->prefix('admin')->group(function () {
+// Route::prefix('admin')->group(function () {
     // UC-01: Mengelola Data Suku Cadang
     Route::get('/management', [SparePartController::class, 'index'])->name('admin.management');
     Route::post('/spare-parts/store', [SparePartController::class, 'store'])->name('spare-parts.store');
