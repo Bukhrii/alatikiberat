@@ -13,7 +13,7 @@
             <a href="/admin/inbound" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
                 <span class="material-symbols-outlined">download</span> Inbound Stock
             </a>
-            <a href="/admin/outbound" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
+            <a href="{{ route('admin.outbound') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm {{ request()->routeIs('admin.outbound') ? 'bg-gray-100 font-bold' : '' }}">
                 <span class="material-symbols-outlined">upload</span> Outbound Stock
             </a>
             <a href="/admin/locations" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">

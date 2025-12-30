@@ -9,6 +9,7 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OutbondController;
 
 // 1. Halaman Utama (Sekarang diarahkan langsung ke Login)
 Route::get('/', [AuthController::class, 'showLogin'])->middleware('guest');
@@ -41,10 +42,13 @@ Route::middleware(['auth', 'role:warehouse_admin'])->prefix('admin')->group(func
     Route::get('/inbound', [StockTransactionController::class, 'inboundIndex'])->name('admin.inbound');
     Route::post('/inbound/store', [StockTransactionController::class, 'storeInbound'])->name('admin.inbound.store');
     Route::patch('/admin/inbound/{id}/status', [StockTransactionController::class, 'updateStatus'])->name('admin.inbound.updateStatus');
-    // UC-03: Mencatat Stok Keluar (Outbound)
+    // UC-03: Mencatat Stok Keluar (Outbond)
+    // 1. Dashboard Utama Outbound (Gunakan OutbondController agar statistik muncul)
+    Route::get('/admin/outbound', [OutbondController::class, 'index'])->name('admin.outbound');
     // Menampilkan halaman form outbound
-    Route::get('/outbound', [StockTransactionController::class, 'outboundIndex'])->name('admin.outbound');
-    Route::post('/outbound/store', [StockTransactionController::class, 'storeOutbound'])->name('admin.outbound.store');
+    // 2. Proses Simpan Transaksi (Tetap di StockTransactionController)
+    Route::post('/admin/outbound/store', [StockTransactionController::class, 'storeOutbound'])->name('admin.outbound.store');
+    Route::patch('/transactions/{id}/status', [StockTransactionController::class, 'updateStatus'])->name('admin.transactions.updateStatus');
 });
 
 /**

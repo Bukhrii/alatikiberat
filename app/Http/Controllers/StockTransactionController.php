@@ -66,50 +66,72 @@ class StockTransactionController extends Controller
         $newStatus = $request->status;
 
         DB::transaction(function () use ($transaction, $oldStatus, $newStatus) {
-            // Logika penyesuaian stok jika status berubah menjadi 'Selesai'
-            if ($oldStatus !== 'Selesai' && $newStatus === 'Selesai') {
-                Inventory::where('spare_part_id', $transaction->spare_part_id)->increment('stock', $transaction->quantity);
-            } 
-            // Logika penyesuaian stok jika status berubah dari 'Selesai' menjadi lainnya (Batal/Pending)
-            elseif ($oldStatus === 'Selesai' && $newStatus !== 'Selesai') {
-                Inventory::where('spare_part_id', $transaction->spare_part_id)->decrement('stock', $transaction->quantity);
+            $inventory = Inventory::where('spare_part_id', $transaction->spare_part_id)->first();
+
+            if ($transaction->type === 'masuk') {
+                // Logika Inbound (Stok Bertambah jika Selesai)
+                if ($oldStatus !== 'Selesai' && $newStatus === 'Selesai') {
+                    $inventory->increment('stock', $transaction->quantity);
+                } elseif ($oldStatus === 'Selesai' && $newStatus !== 'Selesai') {
+                    $inventory->decrement('stock', $transaction->quantity);
+                }
+            } else {
+                // Logika Outbound (Stok Berkurang jika Selesai)
+                if ($oldStatus !== 'Selesai' && $newStatus === 'Selesai') {
+                    // Pastikan stok cukup sebelum mengubah ke Selesai
+                    if ($inventory->stock < $transaction->quantity) {
+                        throw new \Exception('Stok tidak mencukupi untuk menyelesaikan transaksi ini.');
+                    }
+                    $inventory->decrement('stock', $transaction->quantity);
+                } elseif ($oldStatus === 'Selesai' && $newStatus !== 'Selesai') {
+                    // Kembalikan stok jika status berubah dari Selesai ke lainnya
+                    $inventory->increment('stock', $transaction->quantity);
+                }
             }
 
             $transaction->update(['status' => $newStatus]);
         });
 
-        return redirect()->back()->with('success', 'Status transaksi diperbarui.');
+        return redirect()->back()->with('success', 'Status transaksi berhasil diperbarui.');
     }
-
+    
     // UC-03: Simpan Stok Keluar
     public function storeOutbound(Request $request)
     {
+        // 1. Tambahkan validasi untuk input status
         $request->validate([
             'spare_part_id' => 'required',
             'quantity' => 'required|integer|min:1',
             'reference' => 'required',
+            'status' => 'required|in:Selesai,Pending,Batal', // Validasi status dinamis
         ]);
 
+        // 2. Cek ketersediaan barang di inventory
         $inventory = Inventory::where('spare_part_id', $request->spare_part_id)->first();
-        if ($inventory->stock < $request->quantity) {
-            return redirect()->back()->with('error', 'Stok tidak cukup!');
+    
+        if (!$inventory || $inventory->stock < $request->quantity) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi untuk pengeluaran ini.');
         }
 
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $inventory) {
+            // 3. Simpan transaksi dengan status dari input form
             StockTransaction::create([
                 'spare_part_id' => $request->spare_part_id,
                 'user_id' => Auth::id(),
                 'type' => 'keluar',
                 'quantity' => $request->quantity,
                 'reference' => $request->reference,
-                'status' => 'Selesai',
+                'status' => $request->status, // Mengambil status dinamis dari form
                 'notes' => $request->notes
             ]);
 
-            Inventory::where('spare_part_id', $request->spare_part_id)->decrement('stock', $request->quantity);
+            // 4. Logika Stok: Hanya kurangi stok jika statusnya 'Selesai'
+            if ($request->status === 'Selesai') {
+                $inventory->decrement('stock', $request->quantity);
+            }
         });
 
-        return redirect()->back()->with('success', 'Stok Keluar berhasil dicatat.');
+        return redirect()->back()->with('success', 'Transaksi keluar (' . $request->status . ') berhasil dicatat.');
     }
 
     public function outboundIndex()
