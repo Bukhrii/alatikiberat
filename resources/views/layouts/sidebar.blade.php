@@ -1,6 +1,6 @@
 <aside class="flex flex-col w-64 bg-white border-r border-[#dbe0e6] min-h-screen p-4">
     <div class="mb-8 px-3">
-        <h2 class="text-xl font-extrabold text-[#136dec]">Sistem Inventaris Gudang PT. Borneo</h2>
+        <h2 class="text-xl font-extrabold text-[#136dec]">Sistem Inventaris Gudang PT. Borneo Multi Traktor</h2>
     </div>
 
     <nav class="flex-1 space-y-1">
