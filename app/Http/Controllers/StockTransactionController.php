@@ -24,7 +24,10 @@ class StockTransactionController extends Controller
         $parts = SparePart::all();
         $suppliers = Supplier::all();
 
-        return view('admin-gudang-inboundstock', compact('transactions', 'parts', 'suppliers'));
+        $inventoryValue = \App\Models\Inventory::join('spare_parts', 'inventories.spare_part_id', '=', 'spare_parts.id')
+            ->sum(\Illuminate\Support\Facades\DB::raw('inventories.stock * spare_parts.unit_price'));
+
+        return view('admin-gudang-inboundstock', compact('transactions', 'parts', 'suppliers', 'inventoryValue'));
     }
 
     // UC-02: Simpan Stok Masuk
@@ -94,7 +97,7 @@ class StockTransactionController extends Controller
 
         return redirect()->back()->with('success', 'Status transaksi berhasil diperbarui.');
     }
-    
+
     // UC-03: Simpan Stok Keluar
     public function storeOutbound(Request $request)
     {

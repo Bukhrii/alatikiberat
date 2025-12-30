@@ -18,13 +18,18 @@ class DashboardController extends Controller
             ->sum(DB::raw('inventories.stock * spare_parts.unit_price'));
         
         $totalSKU = SparePart::count();
-        $pendingOrders = StockTransaction::where('status', 'Pending')->count();
         $lowStockItems = Inventory::lowStock()->with('sparePart')->get();
         $criticalCount = $lowStockItems->count();
 
         // 2. Data untuk Modal
         $skuList = SparePart::with('inventory')->latest()->take(50)->get();
-        $pendingOrderList = StockTransaction::where('status', 'Pending')->with(['sparePart', 'supplier'])->get();
+        $pendingOrderList = StockTransaction::where('type', 'masuk')
+            ->where('status', 'Pending')
+            ->with(['sparePart', 'supplier'])
+            ->latest()
+            ->get();
+
+        $pendingOrders = $pendingOrderList->count();
 
         // 3. Data Komposisi Kategori (Pie Chart)
         $categoryStats = SparePart::select('category', DB::raw('count(*) as total'))
@@ -62,7 +67,7 @@ class DashboardController extends Controller
         }
 
         return view('manajer-pembelian-dashboard', compact(
-            'inventoryValue', 'totalSKU', 'criticalCount', 'pendingOrders',
+            'inventoryValue', 'totalSKU', 'criticalCount', 'pendingOrders', 'pendingOrderList',
             'lowStockItems', 'skuList', 'pendingOrderList', 'categoryStats', 'movementData'
         ));
     }

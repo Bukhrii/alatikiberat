@@ -12,21 +12,36 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#1a202c] border border-[#dbe0e6] dark:border-gray-700 shadow-sm">
-            <div class="flex items-center justify-between">
-                <p class="text-[#617289] dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Total Inbound</p>
-                <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md" style="font-size: 20px;">input</span>
+    {{-- Card 1: Total Inbound (Existing) --}}
+    <div class="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#1a202c] border border-[#dbe0e6] dark:border-gray-700 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-[#617289] dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Total Inbound</p>
+            <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md" style="font-size: 20px;">input</span>
+        </div>
+        <div class="flex flex-col gap-1 mt-2">
+            <p class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-tight">
+                {{ number_format($transactions->where('status', 'Selesai')->sum('quantity')) }}
+            </p>
+            <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[#07883b] text-sm font-bold">check_circle</span>
+                <p class="text-[#07883b] text-sm font-bold leading-normal">Total Jumlah Aset di Gudang</p>
             </div>
-            <div class="flex flex-col gap-1 mt-2">
-                <p class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-tight">
-                    {{-- Hanya menjumlahkan transaksi yang statusnya Selesai --}}
-                    {{ number_format($transactions->where('status', 'Selesai')->sum('quantity')) }}
-                </p>
-                <div class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[#07883b] text-sm font-bold">check_circle</span>
-                    <p class="text-[#07883b] text-sm font-bold leading-normal">Stok Fisik Bertambah</p>
-                </div>
+        </div>
+    </div>
+
+    {{-- Card 2: Nilai Inventaris (Baru) --}}
+    <div class="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-[#1a202c] border border-[#dbe0e6] dark:border-gray-700 shadow-sm">
+        <div class="flex items-center justify-between">
+            <p class="text-[#617289] dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Nilai Inventaris</p>
+            <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md" style="font-size: 20px;">payments</span>
+        </div>
+        <div class="flex flex-col gap-1 mt-2">
+            <p class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-tight">
+                Rp {{ number_format($inventoryValue / 1000000, 1) }}M
+            </p>
+            <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-primary text-sm font-bold">inventory_2</span>
+                <p class="text-[#617289] dark:text-gray-400 text-sm font-medium leading-normal">Total Nilai Aset Gudang</p>
             </div>
         </div>
     </div>

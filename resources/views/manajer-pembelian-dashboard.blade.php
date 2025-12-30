@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Manajer Pembelian Dashboard')
-@section('header-title', 'Manajer Pembelian Dashboard')
+@section('title', 'Dashboard Pembelian untuk Manajer')
+@section('header-title', 'Dashboard Pembelian untuk Manajer')
 @section('header-subtitle', 'Overview ketersediaan stok dan nilai inventaris.')
 
 @section('content')
