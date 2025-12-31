@@ -24,7 +24,8 @@ class SparePartController extends Controller
             'category' => 'required',
             'brand' => 'required',
             'unit_price' => 'required|numeric',
-            'location_rack' => 'required',
+            'location_rack' => ['required', 'string', 'regex:/^[A-C]/i'], 
+            'location_rack.regex' => 'Lokasi rak tidak valid. Gunakan rak A, B, atau C.',
             'min_stock' => 'required|integer',
         ]);
 
@@ -58,7 +59,8 @@ class SparePartController extends Controller
             'category' => 'required',
             'brand' => 'required',
             'unit_price' => 'required|numeric',
-            'location_rack' => 'required',
+            'location_rack' => ['required', 'string', 'regex:/^[A-C]/i'], 
+            'location_rack.regex' => 'Lokasi rak tidak valid. Gunakan rak A, B, atau C.',
             'min_stock' => 'required|integer',
         ]);
 
@@ -122,7 +124,8 @@ class SparePartController extends Controller
     public function moveItem(Request $request, $id)
     {
         $request->validate([
-            'new_rack' => 'required|string|max:10'
+            'new_rack' => ['required', 'string', 'regex:/^[A-C]/i'],
+            'new_rack.regex' => 'Rak tujuan harus Rak A, B, atau C.',
         ]);
 
         $inventory = Inventory::findOrFail($id);

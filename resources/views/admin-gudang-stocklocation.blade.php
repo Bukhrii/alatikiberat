@@ -104,8 +104,11 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Lokasi Rak Baru</label>
                     <input type="text" name="new_rack" id="new_rack_input" 
-                           class="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white" 
-                           placeholder="Contoh: A-01" required>
+                        class="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white" 
+                        placeholder="Contoh: A-01" 
+                        pattern="^[A-C].*" 
+                        title="Hanya diperbolehkan pindah ke Rak A, B, atau C" 
+                        required>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="toggleModal('modalMove')" class="flex-1 px-4 py-2 border rounded-lg font-bold dark:text-white">Batal</button>

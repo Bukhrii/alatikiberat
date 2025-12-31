@@ -85,7 +85,7 @@
                             <option value="Electrical">Electrical</option>
                         </select>
                     </div>
-                    <div>
+                <div>
                         <label class="block text-sm font-bold mb-1">Brand</label>
                         <input type="text" name="brand" class="w-full p-2 border rounded-lg" required>
                     </div>
@@ -99,7 +99,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-bold mb-1">Lokasi Rak</label>
-                        <input type="text" name="location_rack" class="w-full p-2 border rounded-lg" placeholder="Contoh: A-12" required>
+                        <input type="text" name="location_rack" 
+                            class="w-full p-2 border rounded-lg" 
+                            placeholder="Contoh: A-12" 
+                            pattern="^[A-C].*" 
+                            title="Lokasi rak harus diawali dengan huruf A, B, atau C (Contoh: A-01)" 
+                            required>
                     </div>
                     <div>
                         <label class="block text-sm font-bold mb-1">Stok Minimum</label>
@@ -155,7 +160,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-bold mb-1">Lokasi Rak</label>
-                        <input type="text" id="edit_rack" name="location_rack" class="w-full p-2 border rounded-lg" required>
+                        <input type="text" id="edit_rack" name="location_rack" 
+                            class="w-full p-2 border rounded-lg" 
+                            pattern="^[A-C].*" 
+                            title="Lokasi rak harus diawali dengan huruf A, B, atau C (Contoh: B-05)" 
+                            required>
                     </div>
                     <div>
                         <label class="block text-sm font-bold mb-1">Stok Minimum</label>
